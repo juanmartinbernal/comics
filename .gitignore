@@ -1,5 +1,6 @@
 .idea/
 .gradle/
+.iml/
 app/build/intermediates/blame/res/debug/multi/color.json
 app/build/intermediates/incremental-verifier/debug/com/comicsopentrends/R$bool.class
 app/build/intermediates/incremental-verifier/debug/com/comicsopentrends/R$attr.class
@@ -1314,3 +1315,5 @@ app/build/intermediates/res/merged/debug/values-zh-rCN/values-zh-rCN.xml
 app/build/intermediates/res/merged/debug/values-xlarge-v4/values-xlarge-v4.xml
 build/intermediates/dex-cache/cache.xml
 build/generated/mockable-android-25.jar
+app/build/
+build/
