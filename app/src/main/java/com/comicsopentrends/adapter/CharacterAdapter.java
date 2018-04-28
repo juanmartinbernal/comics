@@ -13,7 +13,6 @@ import com.comicsopentrends.R;
 import com.comicsopentrends.fragments.mvp.characteres.CharactersFragment;
 import com.comicsopentrends.model.Character;
 import com.comicsopentrends.model.Comic;
-import com.comicsopentrends.model.Event;
 import com.comicsopentrends.model.ItemComic;
 import com.comicsopentrends.model.ItemEvent;
 import com.comicsopentrends.model.Thumbnail;
@@ -21,7 +20,6 @@ import com.comicsopentrends.util.CircleTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -126,14 +124,14 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
             if (!TextUtils.isEmpty(url)) {
                 progressBar.setVisibility(View.VISIBLE);
-                Picasso.with(itemView.getContext()).load(url).resize(150, 150).centerCrop().transform(new CircleTransform()).into(image, new Callback() {
+                Picasso.get().load(url).resize(150, 150).centerCrop().transform(new CircleTransform()).into(image, new Callback() {
                     @Override
                     public void onSuccess() {
                         progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
                         progressBar.setVisibility(View.GONE);
                     }
                 });

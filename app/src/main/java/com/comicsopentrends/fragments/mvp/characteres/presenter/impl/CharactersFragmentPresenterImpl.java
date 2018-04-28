@@ -6,7 +6,6 @@ import com.comicsopentrends.model.Character;
 import com.comicsopentrends.model.CharacterResponse;
 import com.comicsopentrends.rest.ApiClient;
 import com.comicsopentrends.rest.ApiInterface;
-import com.comicsopentrends.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     @Override
     public void searchCharacter(String query) {
         charactersFragment.show();
-        Call<CharacterResponse> call = apiService.searchComic(query, ApiClient.API_KEY, Utils.md5(ApiClient.HASH), ApiClient.TIMESTAMP);
+        Call<CharacterResponse> call = apiService.searchComic(query);
         call.enqueue(new Callback<CharacterResponse>() {
             @Override
             public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
@@ -71,7 +70,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     @Override
     public void loadList(int offset) {
         charactersFragment.show();
-        Call<CharacterResponse> call = apiService.getComics(ApiClient.API_KEY, offset, Utils.md5(ApiClient.HASH), ApiClient.TIMESTAMP);
+        Call<CharacterResponse> call = apiService.getComics(offset);
         call.enqueue(new Callback<CharacterResponse>() {
             @Override
             public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {

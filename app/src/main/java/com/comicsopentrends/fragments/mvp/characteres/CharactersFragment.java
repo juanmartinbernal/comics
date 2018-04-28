@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +27,8 @@ import com.comicsopentrends.adapter.CharacterAdapter;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.CharactersFragmentPresenter;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.impl.CharactersFragmentPresenterImpl;
 import com.comicsopentrends.model.Character;
-import com.comicsopentrends.util.CircleTransform;
 import com.comicsopentrends.util.Constants;
 import com.comicsopentrends.util.EndlessScrollListener;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -168,7 +165,7 @@ public class CharactersFragment extends Fragment {
         TextView text = (TextView) dialog.findViewById(R.id.text);
         text.setText("" + name);
         ImageView image = (ImageView) dialog.findViewById(R.id.image);
-        Picasso.with(getContext()).load(url).into(image);
+        Picasso.get().load(url).into(image);
 
         dialog.show();
     }

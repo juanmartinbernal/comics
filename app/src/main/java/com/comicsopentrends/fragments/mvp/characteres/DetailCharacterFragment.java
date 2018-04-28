@@ -1,10 +1,7 @@
 package com.comicsopentrends.fragments.mvp.characteres;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -19,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.comicsopentrends.MainActivity;
 import com.comicsopentrends.R;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.CharacteresFragmentDetailPresenter;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.impl.CharacteresFragmentDetailPresenterImpl;
@@ -102,7 +98,7 @@ public class DetailCharacterFragment extends Fragment {
         mPager.setAdapter(mPagerAdapter);
         txtNameCharacter.setText("" + character.name);
         txtDescription.setText(TextUtils.isEmpty(character.description) ? "No tiene descripción :(" : "" + character.description);
-        Picasso.with(getContext()).load(character.thumbnail.path + "." + character.thumbnail.extension).transform(new CircleTransform()).into(imgCharacterDetail);
+        Picasso.get().load(character.thumbnail.path + "." + character.thumbnail.extension).transform(new CircleTransform()).into(imgCharacterDetail);
     }
 
     @OnClick(R.id.btnDetail)
