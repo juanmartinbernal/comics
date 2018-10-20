@@ -60,7 +60,6 @@ public class DetailWebviewDialogFragment extends DialogFragment implements View.
             title = b.getString("title");
         }
         mTitle.setText(title);
-        webView = (WebView) view.findViewById(R.id.webView);
         //Scroll bars should not be hidden
         webView.setScrollbarFadingEnabled(false);
         //Enable JavaScript
@@ -75,7 +74,9 @@ public class DetailWebviewDialogFragment extends DialogFragment implements View.
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                progressBarLoadUrl.setVisibility(View.GONE);
+                if(view.getProgress() == 100) {
+                    progressBarLoadUrl.setVisibility(View.GONE);
+                }
             }
         });
 
