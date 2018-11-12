@@ -1,5 +1,6 @@
 package com.comicsopentrends.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,8 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class UrlCharacter {
 
     @SerializedName("type")
+    @Expose
     public String type;
 
     @SerializedName("url")
+    @Expose
     public String url;
 }

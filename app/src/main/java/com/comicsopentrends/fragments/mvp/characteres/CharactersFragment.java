@@ -135,7 +135,9 @@ public class CharactersFragment extends Fragment {
     }
 
     public void refreshListScroll() {
-        recyclerView.getAdapter().notifyDataSetChanged();
+        if(recyclerView.getAdapter() != null) {
+           recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     /**

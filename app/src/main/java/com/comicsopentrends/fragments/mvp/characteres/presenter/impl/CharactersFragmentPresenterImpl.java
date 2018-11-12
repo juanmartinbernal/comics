@@ -10,6 +10,10 @@ import com.comicsopentrends.rest.ApiInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +27,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     private List<Character> characters = new ArrayList<>();
     private ApiInterface apiService;
     private int totalCharacteres = -1;
+    List<Character> results;
 
     private CharactersFragment charactersFragment;
 
@@ -69,8 +74,42 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
      */
     @Override
     public void loadList(int offset) {
+
         charactersFragment.show();
-        Call<CharacterResponse> call = apiService.getComics(offset);
+        apiService.getComics(offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CharacterResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(CharacterResponse response) {
+                        //allCurrencyList = new ArrayList<>(coinList.getData().values());
+                       // results = new ArrayList<>(response.data.results);
+                        totalCharacteres = response.data.total;
+                        characters.addAll(response.data.results);
+                        charactersFragment.refreshListScroll();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        charactersFragment.hide();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // Updates UI with data
+
+                        charactersFragment.updateToolbar(characters.size() + "/" + totalCharacteres);
+                        charactersFragment.hide();
+                        //cPresenter.updateCoinList(allCurrencyList);
+                    }
+                });
+/*        Call<CharacterResponse> call = apiService.getComics(offset);
         call.enqueue(new Callback<CharacterResponse>() {
             @Override
             public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
@@ -91,7 +130,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
                 // Log error here since request failed
                 charactersFragment.hide();
             }
-        });
+        });*/
     }
 
     @Override
