@@ -79,6 +79,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
         apiService.getComics(offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .distinct()
                 .subscribe(new Observer<CharacterResponse>() {
                     @Override
                     public void onSubscribe(Disposable d) {
