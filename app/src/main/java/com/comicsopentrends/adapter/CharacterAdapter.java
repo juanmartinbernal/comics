@@ -10,16 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.comicsopentrends.R;
-import com.comicsopentrends.fragments.mvp.characteres.CharactersFragment;
-import com.comicsopentrends.model.Character;
-import com.comicsopentrends.model.Comic;
-import com.comicsopentrends.model.ItemComic;
-import com.comicsopentrends.model.ItemEvent;
-import com.comicsopentrends.model.Thumbnail;
+import com.comicsopentrends.fragments.mvp.characteres.view.ClansListener;
+import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.util.CircleTransform;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -31,28 +28,14 @@ import butterknife.ButterKnife;
  */
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClick(Character item);
+
+    private List<ItemsItem> characterList;
+    private ClansListener clansListener;
+
+    public CharacterAdapter(ClansListener clansListener) {
+        this.characterList = new ArrayList<>();
+        this.clansListener = clansListener;
     }
-
-    private final OnItemClickListener listener;
-    private List<Character> characterList;
-    private List<ItemComic> comicList;
-    private List<ItemEvent> eventList;
-    private CharactersFragment charactersFragment;
-
-    public CharacterAdapter(List<Character> characterList, OnItemClickListener listener, CharactersFragment charactersFragment) {
-        this.listener = listener;
-        this.characterList = characterList;
-        this.charactersFragment = charactersFragment;
-    }
-
-    public CharacterAdapter(List<ItemComic> comicList, List<ItemEvent> eventList) {
-        this.comicList = comicList;
-        this.eventList = eventList;
-        listener = null;
-    }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,24 +47,17 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if (eventList != null) {
-            holder.bind(eventList.get(position));
-        } else if (comicList != null) {
-            holder.bind(comicList.get(position));
-        } else {
-            holder.bind(characterList.get(position), listener);
-        }
+        holder.bind(characterList.get(position), clansListener);
+    }
+
+    public void setData(List<ItemsItem> characterList){
+        this.characterList = characterList;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (eventList != null) {
-            return eventList.size();
-        } else if (comicList != null) {
-            return comicList.size();
-        } else {
-            return characterList.size();
-        }
+        return characterList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -100,28 +76,9 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final ItemEvent itemEvent) {
-            progressBar.setVisibility(View.GONE);
-            name.setText(itemEvent.name);
-        }
-
-        public void bind(final ItemComic itemComic) {
-            progressBar.setVisibility(View.GONE);
-            name.setText(itemComic.name);
-        }
-
-        public void bind(final Character item, final OnItemClickListener listener) {
-            name.setText(item.name);
-
-            Comic comic = item.comic;
-            if (comic != null)
-                txtComic.setText((comic.items != null && comic.items.size() > 0) ? comic.items.get(0).name : "No tiene comics");
-
-            final Thumbnail thumbnail = item.thumbnail;
-            String url = "";
-            if (thumbnail != null)
-                url = thumbnail.path + "." + thumbnail.extension;
-
+        public void bind(final ItemsItem item, final ClansListener listener) {
+            name.setText(item.getName());
+            String url = item.getBadgeUrls().getMedium();
             if (!TextUtils.isEmpty(url)) {
                 progressBar.setVisibility(View.VISIBLE);
                 Picasso.get().load(url).resize(150, 150).centerCrop().transform(new CircleTransform()).into(image, new Callback() {
@@ -137,20 +94,12 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
                 });
             }
 
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String url = thumbnail.path + "." + thumbnail.extension;
-                    charactersFragment.seeImageCharacter(url, item.name);
-                }
+            image.setOnClickListener(view -> {
+                String url1 = item.getBadgeUrls().getLarge();
+                listener.seeImageCharacter(url1, item.getName());
             });
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(item);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(item));
         }
     }
 

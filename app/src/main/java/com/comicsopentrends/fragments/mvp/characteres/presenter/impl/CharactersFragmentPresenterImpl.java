@@ -1,15 +1,19 @@
 package com.comicsopentrends.fragments.mvp.characteres.presenter.impl;
 
-import com.comicsopentrends.fragments.mvp.characteres.CharactersFragment;
+import android.text.TextUtils;
+
 import com.comicsopentrends.fragments.mvp.characteres.presenter.CharactersFragmentPresenter;
-import com.comicsopentrends.model.Character;
-import com.comicsopentrends.model.CharacterResponse;
+import com.comicsopentrends.fragments.mvp.characteres.view.CharactersFragment;
+import com.comicsopentrends.model.ItemsItem;
+import com.comicsopentrends.model.ResponseClans;
 import com.comicsopentrends.rest.ApiClient;
 import com.comicsopentrends.rest.ApiInterface;
+import com.comicsopentrends.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -24,10 +28,11 @@ import retrofit2.Response;
 
 public class CharactersFragmentPresenterImpl implements CharactersFragmentPresenter {
 
-    private List<Character> characters = new ArrayList<>();
+    private List<ItemsItem> characters = new ArrayList<>();
     private ApiInterface apiService;
-    private int totalCharacteres = -1;
-    List<Character> results;
+    //paginación
+    private String beforePaging;
+    private String afterPaging = "";
 
     private CharactersFragment charactersFragment;
 
@@ -44,23 +49,22 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     @Override
     public void searchCharacter(String query) {
         charactersFragment.show();
-        Call<CharacterResponse> call = apiService.searchComic(query);
-        call.enqueue(new Callback<CharacterResponse>() {
+        Call<ResponseClans> call = apiService.searchClan(query);
+        call.enqueue(new Callback<ResponseClans>() {
             @Override
-            public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
+            public void onResponse(Call<ResponseClans> call, Response<ResponseClans> response) {
                 if (response.code() == 200) {
                     characters.clear();
-                    final List<Character> movies = response.body().data.results;
-                    totalCharacteres = response.body().data.total;
-                    characters.addAll(movies);
-                    charactersFragment.refreshListScroll();
+                    List<ItemsItem> itemsItems = response.body().getItems();
+                    characters.addAll(itemsItems);
+                    charactersFragment.setDataClans(characters);
                 }
                 charactersFragment.hide();
 
             }
 
             @Override
-            public void onFailure(Call<CharacterResponse> call, Throwable t) {
+            public void onFailure(Call<ResponseClans> call, Throwable t) {
                 // Log error here since request failed
                 charactersFragment.hide();
             }
@@ -68,31 +72,33 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     }
 
     /**
-     * Método encargado de cargar los personajes dado el offset para hacer la paginación
-     *
-     * @param offset
+     * Método encargado de cargar los clanes
      */
     @Override
-    public void loadList(int offset) {
-
+    public void loadList() {
+        Observable<ResponseClans> responseClansObservable = null;
         charactersFragment.show();
-        apiService.getComics(offset)
-                .subscribeOn(Schedulers.io())
+        if (TextUtils.isEmpty(afterPaging)) {
+            responseClansObservable = apiService.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY);
+        } else {
+            responseClansObservable = apiService.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY, afterPaging);
+        }
+
+        responseClansObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinct()
-                .subscribe(new Observer<CharacterResponse>() {
+                .subscribe(new Observer<ResponseClans>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(CharacterResponse response) {
-                        //allCurrencyList = new ArrayList<>(coinList.getData().values());
-                       // results = new ArrayList<>(response.data.results);
-                        totalCharacteres = response.data.total;
-                        characters.addAll(response.data.results);
-                        charactersFragment.refreshListScroll();
+                    public void onNext(ResponseClans response) {
+                        beforePaging = response.getPaging().getCursors().getBefore();
+                        afterPaging = response.getPaging().getCursors().getAfter();
+                        characters.addAll(response.getItems());
+                        charactersFragment.setDataClans(characters);
                     }
 
                     @Override
@@ -104,52 +110,26 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
                     @Override
                     public void onComplete() {
                         // Updates UI with data
-
-                        charactersFragment.updateToolbar(characters.size() + "/" + totalCharacteres);
+                        charactersFragment.updateToolbar(String.valueOf(characters.size()));
                         charactersFragment.hide();
-                        //cPresenter.updateCoinList(allCurrencyList);
                     }
                 });
-/*        Call<CharacterResponse> call = apiService.getComics(offset);
-        call.enqueue(new Callback<CharacterResponse>() {
-            @Override
-            public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
-                int statusCode = response.code();
-                if (statusCode == 200) {
-                    totalCharacteres = response.body().data.total;
-                    List<Character> results = response.body().data.results;
-                    characters.addAll(results);
-                    charactersFragment.refreshListScroll();
-                    charactersFragment.updateToolbar(characters.size() + "/" + totalCharacteres);
-                }
-                charactersFragment.hide();
 
-            }
-
-            @Override
-            public void onFailure(Call<CharacterResponse> call, Throwable t) {
-                // Log error here since request failed
-                charactersFragment.hide();
-            }
-        });*/
-    }
-
-    @Override
-    public List<Character> getCharacteresAcum() {
-        return characters;
     }
 
     /**
-     * Método encargado de realizar la paginación y cargar los nuevos personajes en el listado.
-     *
-     * @param offset
+     * Método encargado de realizar la paginación y cargar los nuevos clanes en el listado.
      */
     @Override
-    public void onLoadMore(int offset) {
-        offset = offset * 20;
-        if (offset <= totalCharacteres) {
-            loadList(offset);
-        }
+    public void onLoadMore() {
+        loadList();
+    }
+
+    @Override
+    public void resetVariables() {
+        characters.clear();
+        beforePaging = "";
+        afterPaging = "";
     }
 
 }

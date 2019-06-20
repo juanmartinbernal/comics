@@ -1,4 +1,4 @@
-package com.comicsopentrends.fragments.mvp.characteres;
+package com.comicsopentrends.fragments.mvp.characteres.view.impl;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -26,10 +26,15 @@ import com.comicsopentrends.R;
 import com.comicsopentrends.adapter.CharacterAdapter;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.CharactersFragmentPresenter;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.impl.CharactersFragmentPresenterImpl;
-import com.comicsopentrends.model.Character;
+import com.comicsopentrends.fragments.mvp.characteres.view.CharactersFragment;
+import com.comicsopentrends.fragments.mvp.characteres.view.ClansListener;
+import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.util.Constants;
 import com.comicsopentrends.util.EndlessScrollListener;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,9 +43,10 @@ import butterknife.ButterKnife;
 /**
  * Created by Juan Martin Bernal on 20/10/2017.
  */
-public class CharactersFragment extends Fragment {
+public class CharactersFragmentImpl extends Fragment implements CharactersFragment , ClansListener {
 
     private CharactersFragmentPresenter charactersFragmentPresenter;
+    private CharacterAdapter adapter;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -69,30 +75,23 @@ public class CharactersFragment extends Fragment {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                charactersFragmentPresenter.onLoadMore(page);
+                charactersFragmentPresenter.onLoadMore();
             }
         };
 
         recyclerView.addOnScrollListener(scrollListener);
+        adapter = new CharacterAdapter(this);
+        recyclerView.setAdapter(adapter);
 
-        recyclerView.setAdapter(new CharacterAdapter(charactersFragmentPresenter.getCharacteresAcum(), new CharacterAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Character item) {
-                //ir al detalle
-                Intent intent = new Intent(getContext(), CharacterDetailActivity.class);
-                intent.putExtra("characterId", item.id);
-                startActivity(intent);
-            }
-        }, this));
-
-        charactersFragmentPresenter.loadList(0);
-
+        charactersFragmentPresenter.loadList();
     }
 
+    @Override
     public void show() {
         progressBarLoadUsers.setVisibility(View.VISIBLE);
     }
 
+    @Override
     public void hide() {
         progressBarLoadUsers.setVisibility(View.GONE);
     }
@@ -107,14 +106,10 @@ public class CharactersFragment extends Fragment {
         MenuItemCompat.setOnActionExpandListener(searchItem, new SearchViewExpandListener(getContext()));
         MenuItemCompat.setActionView(searchItem, searchView);
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-
-            @Override
-            public boolean onClose() {
-                charactersFragmentPresenter.getCharacteresAcum().clear();
-                charactersFragmentPresenter.loadList(0);
-                return false;
-            }
+        searchView.setOnCloseListener(() -> {
+            charactersFragmentPresenter.resetVariables();
+            charactersFragmentPresenter.loadList();
+            return false;
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -133,10 +128,10 @@ public class CharactersFragment extends Fragment {
             }
         });
     }
-
-    public void refreshListScroll() {
-        if(recyclerView.getAdapter() != null) {
-           recyclerView.getAdapter().notifyDataSetChanged();
+    @Override
+    public void setDataClans(List<ItemsItem> dataClans) {
+        if(adapter != null) {
+           adapter.setData(dataClans);
         }
     }
 
@@ -145,10 +140,19 @@ public class CharactersFragment extends Fragment {
      *
      * @param text
      */
+    @Override
     public void updateToolbar(String text) {
         if (getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("" + text);
         }
+    }
+
+    @Override
+    public void onItemClick(ItemsItem item) {
+        //ir al detalle
+        Intent intent = new Intent(getContext(), CharacterDetailActivity.class);
+        intent.putExtra("characterId", item.getTag());
+        startActivity(intent);
     }
 
     /**
@@ -157,6 +161,7 @@ public class CharactersFragment extends Fragment {
      * @param url
      * @param name
      */
+    @Override
     public void seeImageCharacter(String url, String name) {
         // custom dialog
         final Dialog dialog = new Dialog(getContext());
@@ -164,10 +169,22 @@ public class CharactersFragment extends Fragment {
         dialog.setContentView(R.layout.dialog_photo_profile);
 
         // set the custom dialog components - text, image and button
-        TextView text = (TextView) dialog.findViewById(R.id.text);
-        text.setText("" + name);
-        ImageView image = (ImageView) dialog.findViewById(R.id.image);
-        Picasso.get().load(url).into(image);
+        TextView text = dialog.findViewById(R.id.text);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        text.setText(name);
+        ImageView image = dialog.findViewById(R.id.image);
+        progressBar.setVisibility(View.VISIBLE);
+        Picasso.get().load(url).into(image, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
 
         dialog.show();
     }

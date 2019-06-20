@@ -1,6 +1,7 @@
 package com.comicsopentrends.rest;
 
-import com.comicsopentrends.model.CharacterResponse;
+import com.comicsopentrends.model.ItemsItem;
+import com.comicsopentrends.model.ResponseClans;
 
 import io.reactivex.Observable;
 import retrofit2.Call;
@@ -14,13 +15,16 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("characters")
-    Observable<CharacterResponse> getComics(@Query("offset") int offset);
+    @GET("clans/{clanTag}")
+    Call<ItemsItem> getClanDetails(@Path("clanTag") String clanTag);
 
-    @GET("characters/{id}")
-    Call<CharacterResponse> getComicDetails(@Path("id") int id);
+    @GET("clans")
+    Call<ResponseClans> searchClan(@Query("name") String query);
 
-    @GET("characters")
-    Call<CharacterResponse> searchComic(@Query("nameStartsWith") String query);
+    @GET("clans")
+    Observable<ResponseClans> getClans(@Query("limit") int limit, @Query("warFrequency") String war);
+
+    @GET("clans")
+    Observable<ResponseClans> getClans(@Query("limit") int limit, @Query("warFrequency") String war, @Query("after") String after);
 }
 

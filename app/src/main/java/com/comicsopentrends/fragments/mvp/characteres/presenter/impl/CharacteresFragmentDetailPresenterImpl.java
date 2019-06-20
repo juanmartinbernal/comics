@@ -1,9 +1,8 @@
 package com.comicsopentrends.fragments.mvp.characteres.presenter.impl;
 
-import com.comicsopentrends.fragments.mvp.characteres.DetailCharacterFragment;
 import com.comicsopentrends.fragments.mvp.characteres.presenter.CharacteresFragmentDetailPresenter;
-import com.comicsopentrends.model.Character;
-import com.comicsopentrends.model.CharacterResponse;
+import com.comicsopentrends.fragments.mvp.characteres.view.impl.DetailCharacterFragmentImpl;
+import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.rest.ApiClient;
 import com.comicsopentrends.rest.ApiInterface;
 
@@ -17,10 +16,10 @@ import retrofit2.Response;
 
 public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragmentDetailPresenter {
 
-    private DetailCharacterFragment detailCharacterFragment;
+    private DetailCharacterFragmentImpl detailCharacterFragment;
     private ApiInterface apiService;
 
-    public CharacteresFragmentDetailPresenterImpl(DetailCharacterFragment detailCharacterFragment) {
+    public CharacteresFragmentDetailPresenterImpl(DetailCharacterFragmentImpl detailCharacterFragment) {
         this.detailCharacterFragment = detailCharacterFragment;
         apiService = ApiClient.getClient().create(ApiInterface.class);
     }
@@ -30,22 +29,22 @@ public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragme
      * @param characterId
      */
     @Override
-    public void goToDetail(int characterId) {
+    public void goToDetail(String characterId) {
 
-        Call<CharacterResponse> call = apiService.getComicDetails(characterId);
-        call.enqueue(new Callback<CharacterResponse>() {
+        Call<ItemsItem> call = apiService.getClanDetails(characterId);
+        call.enqueue(new Callback<ItemsItem>() {
             @Override
-            public void onResponse(Call<CharacterResponse> call, Response<CharacterResponse> response) {
+            public void onResponse(Call<ItemsItem> call, Response<ItemsItem> response) {
                 // String detail = response.body().toString();
                 int code = response.code();
                 if(code == 200) {
-                    Character character = response.body().data.results.get(0);
+                    ItemsItem character = response.body();
                     detailCharacterFragment.loadData(character);
                 }
             }
 
             @Override
-            public void onFailure(Call<CharacterResponse> call, Throwable t) {
+            public void onFailure(Call<ItemsItem> call, Throwable t) {
                 // Log error here since request failed
 
             }

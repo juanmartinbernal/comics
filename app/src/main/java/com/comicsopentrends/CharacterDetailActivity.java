@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.comicsopentrends.fragments.mvp.characteres.DetailCharacterFragment;
+import com.comicsopentrends.fragments.mvp.characteres.view.impl.DetailCharacterFragmentImpl;
 import com.comicsopentrends.util.Utils;
 
 /**
@@ -21,9 +21,9 @@ public class CharacterDetailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            int characterId = bundle.getInt("characterId");
+            String characterId = bundle.getString("characterId");
             Bundle data = new Bundle();
-            data.putInt("characterId", characterId);
+            data.putString("characterId", characterId);
             Utils.replaceFragment(getInstance(data), R.id.charactersFragment, getSupportFragmentManager());
         }
 
@@ -34,8 +34,8 @@ public class CharacterDetailActivity extends AppCompatActivity {
      * @param data
      * @return
      */
-    public static final DetailCharacterFragment getInstance(Bundle data) {
-        DetailCharacterFragment fragment = new DetailCharacterFragment();
+    public static final DetailCharacterFragmentImpl getInstance(Bundle data) {
+        DetailCharacterFragmentImpl fragment = new DetailCharacterFragmentImpl();
         fragment.setArguments(data);
         return fragment;
     }
