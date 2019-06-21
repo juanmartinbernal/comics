@@ -4,8 +4,9 @@
     <string name="search_hint">Buscar...</string>
     <string name="my_name">Juan Martín Bernal</string>
 
-    <!--detalle personaje-->
-    <string name="prompt_detail">Detalle</string>
-    <string name="prompt_wiki">Wiki</string>
-    <string name="prompt_comic">Comic</string>
+    <string name="prompt_info">Información del clan</string>
+    <string name="prompt_members">Miembros: %1$d</string>
+    <string name="prompt_points">Puntos del clan: %1$d</string>
+    <string name="prompt_war_wins">Guerras ganadas: %1$d</string>
+    <string name="prompt_war_lose">Guerras perdidas: %1$d</string>
 </resources>

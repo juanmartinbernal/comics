@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,8 +41,20 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     TextView txtNameCharacter;
     @BindView(R.id.txtDescription)
     TextView txtDescription;
-    @BindView(R.id.btnDetail)
-    Button btnDetail;
+
+
+    @BindView(R.id.txtTag)
+    TextView txtTag;
+    @BindView(R.id.txtMembers)
+    TextView txtMembers;
+    @BindView(R.id.txtPoints)
+    TextView txtPoints;
+    @BindView(R.id.txtWarWin)
+    TextView txtWarWin;
+    @BindView(R.id.txtWarLose)
+    TextView txtWarLose;
+
+
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -64,7 +75,6 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_detail_fragment, container, false);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -86,8 +96,13 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     public void loadData(ItemsItem clan) {
         txtNameCharacter.setText(clan.getName());
         txtDescription.setText(clan.getType());
+        txtTag.setText(clan.getTag());
+        txtMembers.setText(getString(R.string.prompt_members,clan.getMembers()));
+        txtPoints.setText(getString(R.string.prompt_points,clan.getClanPoints()));
+        txtWarWin.setText(getString(R.string.prompt_war_wins,clan.getWarWins()));
+        txtWarLose.setText(getString(R.string.prompt_war_lose,clan.getWarLosses()));
         progressBar.setVisibility(View.VISIBLE);
-        Picasso.get().load(clan.getBadgeUrls().getLarge()).transform(new CircleTransform()).into(imgCharacterDetail, new Callback() {
+        Picasso.get().load(clan.getBadgeUrls().getMedium()).transform(new CircleTransform()).into(imgCharacterDetail, new Callback() {
             @Override
             public void onSuccess() {
                 progressBar.setVisibility(View.GONE);

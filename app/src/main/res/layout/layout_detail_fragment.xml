@@ -5,9 +5,10 @@
     android:layout_margin="16dp"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:id="@+id/containerImage"
@@ -21,24 +22,23 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/app_name"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/verse_logo" />
+                android:scaleType="centerCrop" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content" />
+                android:layout_centerVertical="true" />
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/containerImage"
-            android:layout_toRightOf="@+id/containerImage"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -67,73 +67,94 @@
         </LinearLayout>
 
 
-    </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorPrimary" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imgCharacterDetail"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:text="Links"
+            android:text="@string/prompt_info"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="22sp"
+            android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnDetail"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/txtTag"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@color/colorPrimary"
-                android:text="@string/prompt_detail"
-                android:textColor="@color/white" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnWiki"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/txtMembers"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="8dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/prompt_wiki"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/btnComics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="8dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/prompt_comic"
-                android:textColor="@color/white" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="22sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txtPoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtWarWin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtWarLose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <!--viewpager-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
@@ -149,5 +170,19 @@
                 android:paddingBottom="4dp" />
         </android.support.v4.view.ViewPager>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom|end"
+        android:layout_gravity="bottom|end">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:src="@drawable/verse_logo"
+            android:alpha="0.3"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 </LinearLayout>
