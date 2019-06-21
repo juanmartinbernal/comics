@@ -1,4 +1,4 @@
-package com.comicsopentrends.fragments.mvp.characteres.view;
+package com.comicsopentrends.fragments.mvp.clans.view;
 
 import com.comicsopentrends.model.ItemsItem;
 

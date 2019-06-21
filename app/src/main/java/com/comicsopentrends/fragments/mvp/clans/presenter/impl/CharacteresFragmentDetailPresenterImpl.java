@@ -1,7 +1,7 @@
-package com.comicsopentrends.fragments.mvp.characteres.presenter.impl;
+package com.comicsopentrends.fragments.mvp.clans.presenter.impl;
 
-import com.comicsopentrends.fragments.mvp.characteres.presenter.CharacteresFragmentDetailPresenter;
-import com.comicsopentrends.fragments.mvp.characteres.view.impl.DetailCharacterFragmentImpl;
+import com.comicsopentrends.fragments.mvp.clans.presenter.CharacteresFragmentDetailPresenter;
+import com.comicsopentrends.fragments.mvp.clans.view.impl.DetailCharacterFragmentImpl;
 import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.rest.ApiClient;
 import com.comicsopentrends.rest.ApiInterface;

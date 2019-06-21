@@ -1,4 +1,4 @@
-package com.comicsopentrends.adapter;
+package com.comicsopentrends.fragments.mvp.clans.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.comicsopentrends.R;
-import com.comicsopentrends.fragments.mvp.characteres.view.ClansListener;
+import com.comicsopentrends.fragments.mvp.clans.view.ClansListener;
 import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.util.CircleTransform;
 import com.squareup.picasso.Callback;
@@ -26,13 +26,13 @@ import butterknife.ButterKnife;
  * Created by Juan Martin Bernal on 20/10/2017.
  * Clase que permite pintar los personajes en una lista
  */
-public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
+public class ClanAdapter extends RecyclerView.Adapter<ClanAdapter.ViewHolder> {
 
 
     private List<ItemsItem> characterList;
     private ClansListener clansListener;
 
-    public CharacterAdapter(ClansListener clansListener) {
+    public ClanAdapter(ClansListener clansListener) {
         this.characterList = new ArrayList<>();
         this.clansListener = clansListener;
     }
@@ -78,10 +78,10 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
         public void bind(final ItemsItem item, final ClansListener listener) {
             name.setText(item.getName());
-            String url = item.getBadgeUrls().getMedium();
+            String url = item.getBadgeUrls().getSmall();
             if (!TextUtils.isEmpty(url)) {
                 progressBar.setVisibility(View.VISIBLE);
-                Picasso.get().load(url).resize(150, 150).centerCrop().transform(new CircleTransform()).into(image, new Callback() {
+                Picasso.get().load(url).transform(new CircleTransform()).into(image, new Callback() {
                     @Override
                     public void onSuccess() {
                         progressBar.setVisibility(View.GONE);
@@ -90,6 +90,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
                     @Override
                     public void onError(Exception e) {
                         progressBar.setVisibility(View.GONE);
+                        image.setImageResource(R.drawable.verse_logo);
                     }
                 });
             }

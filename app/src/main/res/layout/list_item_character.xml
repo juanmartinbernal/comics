@@ -1,65 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="64dp">
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingStart="16dp">
 
         <ImageView
+            android:id="@+id/imgCharacter"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:id="@+id/imgCharacter"
-            android:src="@mipmap/ic_launcher"/>
+            android:contentDescription="@string/app_name"
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginTop="3dp"
             android:id="@+id/txtName"
-            android:paddingLeft="16dp"
-            android:textSize="16sp"
-            android:textColor="#444"
-            android:gravity="center_vertical"
-            android:maxLines="1"
-            android:fontFamily="sans-serif"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/imgCharacter"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:id="@+id/txtComic"
-            android:paddingLeft="16dp"
-            android:textSize="14sp"
-            android:textColor="#444"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="3dp"
+            android:layout_toEndOf="@+id/imgCharacter"
+            android:fontFamily="sans-serif"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:fontFamily="sans-serif"
+            android:paddingStart="16dp"
+            android:text=""
+            android:textColor="#444"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/txtComic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/txtName"
-            android:layout_toRightOf="@+id/imgCharacter"
-            android:layout_alignRight="@+id/txtName"
-            android:layout_alignEnd="@+id/txtName" />
+            android:layout_alignEnd="@+id/txtName"
+            android:layout_toEndOf="@+id/imgCharacter"
+            android:fontFamily="sans-serif"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:text=""
+            android:textColor="#444"
+            android:textSize="14sp" />
 
         <ProgressBar
             android:id="@+id/progressBarCharacter"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
             android:layout_alignTop="@+id/txtName"
-            android:layout_alignBottom="@+id/imgCharacter" />
+            android:layout_alignBottom="@+id/imgCharacter"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp" />
     </RelativeLayout>
 
 </LinearLayout>

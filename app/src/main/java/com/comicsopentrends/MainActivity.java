@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.comicsopentrends.fragments.mvp.characteres.view.impl.CharactersFragmentImpl;
+import com.comicsopentrends.fragments.mvp.clans.view.impl.CharactersFragmentImpl;
 import com.comicsopentrends.util.Utils;
 
 
@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Utils.replaceFragment(new CharactersFragmentImpl(), R.id.charactersFragment,getSupportFragmentManager());
+        Utils.replaceFragment(new CharactersFragmentImpl(), R.id.charactersFragment, getSupportFragmentManager());
     }
 }

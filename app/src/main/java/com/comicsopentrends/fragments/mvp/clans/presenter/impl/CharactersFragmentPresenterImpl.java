@@ -1,9 +1,9 @@
-package com.comicsopentrends.fragments.mvp.characteres.presenter.impl;
+package com.comicsopentrends.fragments.mvp.clans.presenter.impl;
 
 import android.text.TextUtils;
 
-import com.comicsopentrends.fragments.mvp.characteres.presenter.CharactersFragmentPresenter;
-import com.comicsopentrends.fragments.mvp.characteres.view.CharactersFragment;
+import com.comicsopentrends.fragments.mvp.clans.presenter.CharactersFragmentPresenter;
+import com.comicsopentrends.fragments.mvp.clans.view.CharactersFragment;
 import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.model.ResponseClans;
 import com.comicsopentrends.rest.ApiClient;
@@ -48,6 +48,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
      */
     @Override
     public void searchCharacter(String query) {
+        charactersFragment.hideScreenError();
         charactersFragment.show();
         Call<ResponseClans> call = apiService.searchClan(query);
         call.enqueue(new Callback<ResponseClans>() {
@@ -67,6 +68,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
             public void onFailure(Call<ResponseClans> call, Throwable t) {
                 // Log error here since request failed
                 charactersFragment.hide();
+                charactersFragment.showScreenError(t.getMessage());
             }
         });
     }
@@ -104,6 +106,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
                     @Override
                     public void onError(Throwable e) {
                         charactersFragment.hide();
+                        charactersFragment.showScreenError(e.getMessage());
 
                     }
 
@@ -130,6 +133,14 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
         characters.clear();
         beforePaging = "";
         afterPaging = "";
+    }
+
+    @Override
+    public void onRefresh() {
+        charactersFragment.hideScreenError();
+        charactersFragment.setRefreshing(true);
+        resetVariables();
+        loadList();
     }
 
 }

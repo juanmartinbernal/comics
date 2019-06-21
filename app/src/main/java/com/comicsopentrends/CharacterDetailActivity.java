@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.comicsopentrends.fragments.mvp.characteres.view.impl.DetailCharacterFragmentImpl;
+import com.comicsopentrends.fragments.mvp.clans.view.impl.DetailCharacterFragmentImpl;
 import com.comicsopentrends.util.Utils;
 
 /**

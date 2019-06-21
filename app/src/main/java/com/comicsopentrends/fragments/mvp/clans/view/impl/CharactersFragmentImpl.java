@@ -1,11 +1,12 @@
-package com.comicsopentrends.fragments.mvp.characteres.view.impl;
+package com.comicsopentrends.fragments.mvp.clans.view.impl;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,23 +17,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.comicsopentrends.CharacterDetailActivity;
 import com.comicsopentrends.R;
-import com.comicsopentrends.adapter.CharacterAdapter;
-import com.comicsopentrends.fragments.mvp.characteres.presenter.CharactersFragmentPresenter;
-import com.comicsopentrends.fragments.mvp.characteres.presenter.impl.CharactersFragmentPresenterImpl;
-import com.comicsopentrends.fragments.mvp.characteres.view.CharactersFragment;
-import com.comicsopentrends.fragments.mvp.characteres.view.ClansListener;
+import com.comicsopentrends.fragments.mvp.clans.adapter.ClanAdapter;
+import com.comicsopentrends.fragments.mvp.clans.presenter.CharactersFragmentPresenter;
+import com.comicsopentrends.fragments.mvp.clans.presenter.impl.CharactersFragmentPresenterImpl;
+import com.comicsopentrends.fragments.mvp.clans.view.CharactersFragment;
+import com.comicsopentrends.fragments.mvp.clans.view.ClansListener;
 import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.util.Constants;
 import com.comicsopentrends.util.EndlessScrollListener;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.comicsopentrends.util.Utils;
 
 import java.util.List;
 
@@ -43,15 +44,30 @@ import butterknife.ButterKnife;
 /**
  * Created by Juan Martin Bernal on 20/10/2017.
  */
-public class CharactersFragmentImpl extends Fragment implements CharactersFragment , ClansListener {
+public class CharactersFragmentImpl extends Fragment implements CharactersFragment, SwipeRefreshLayout.OnRefreshListener, ClansListener {
 
     private CharactersFragmentPresenter charactersFragmentPresenter;
-    private CharacterAdapter adapter;
+    private ClanAdapter adapter;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.progressBarLoadUsers)
     ProgressBar progressBarLoadUsers;
+    @BindView(R.id.imgVerseLoading)
+    ImageView imgVerseLoading;
+    @BindView(R.id.containerError)
+    LinearLayout containerError;
+    @BindView(R.id.txtError)
+    TextView txtError;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,11 +80,10 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHasOptionsMenu(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         EndlessScrollListener scrollListener = new EndlessScrollListener(linearLayoutManager) {
             @Override
@@ -80,7 +95,7 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
         };
 
         recyclerView.addOnScrollListener(scrollListener);
-        adapter = new CharacterAdapter(this);
+        adapter = new ClanAdapter(this);
         recyclerView.setAdapter(adapter);
 
         charactersFragmentPresenter.loadList();
@@ -88,12 +103,16 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
 
     @Override
     public void show() {
-        progressBarLoadUsers.setVisibility(View.VISIBLE);
+        imgVerseLoading.setVisibility(View.VISIBLE);
+        imgVerseLoading.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.animation_loading));
     }
 
     @Override
     public void hide() {
-        progressBarLoadUsers.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
+        imgVerseLoading.setVisibility(View.GONE);
+        imgVerseLoading.clearAnimation();
+        hideScreenError();
     }
 
     @Override
@@ -106,10 +125,13 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
         MenuItemCompat.setOnActionExpandListener(searchItem, new SearchViewExpandListener(getContext()));
         MenuItemCompat.setActionView(searchItem, searchView);
 
-        searchView.setOnCloseListener(() -> {
-            charactersFragmentPresenter.resetVariables();
-            charactersFragmentPresenter.loadList();
-            return false;
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                charactersFragmentPresenter.resetVariables();
+                charactersFragmentPresenter.loadList();
+                return false;
+            }
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -128,10 +150,11 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
             }
         });
     }
+
     @Override
     public void setDataClans(List<ItemsItem> dataClans) {
-        if(adapter != null) {
-           adapter.setData(dataClans);
+        if (adapter != null) {
+            adapter.setData(dataClans);
         }
     }
 
@@ -148,10 +171,26 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
     }
 
     @Override
+    public void showScreenError(String message) {
+        containerError.setVisibility(View.VISIBLE);
+        txtError.setText(message);
+    }
+
+    @Override
+    public void hideScreenError() {
+        containerError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setRefreshing(boolean refresh) {
+        swipeRefreshLayout.setRefreshing(refresh);
+    }
+
+    @Override
     public void onItemClick(ItemsItem item) {
         //ir al detalle
         Intent intent = new Intent(getContext(), CharacterDetailActivity.class);
-        intent.putExtra("characterId", item.getTag());
+        intent.putExtra(CLAN_TAG, item.getTag());
         startActivity(intent);
     }
 
@@ -164,29 +203,12 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
     @Override
     public void seeImageCharacter(String url, String name) {
         // custom dialog
-        final Dialog dialog = new Dialog(getContext());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_photo_profile);
+        Utils.showDialogPreviewImage(getActivity(), url, name);
+    }
 
-        // set the custom dialog components - text, image and button
-        TextView text = dialog.findViewById(R.id.text);
-        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
-        text.setText(name);
-        ImageView image = dialog.findViewById(R.id.image);
-        progressBar.setVisibility(View.VISIBLE);
-        Picasso.get().load(url).into(image, new Callback() {
-            @Override
-            public void onSuccess() {
-                progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-
-        dialog.show();
+    @Override
+    public void onRefresh() {
+        charactersFragmentPresenter.onRefresh();
     }
 
     // See above
@@ -194,8 +216,8 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
 
         private Context context;
 
-        public SearchViewExpandListener(Context c) {
-            context = c;
+        public SearchViewExpandListener(Context context) {
+            this.context = context;
         }
 
         @Override
@@ -210,4 +232,6 @@ public class CharactersFragmentImpl extends Fragment implements CharactersFragme
             return false;
         }
     }
+
+
 }
