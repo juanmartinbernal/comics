@@ -26,6 +26,7 @@ public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragme
 
     /**
      * Método encargado de obtener el detalle de un personaje dado su id.
+     *
      * @param characterId
      */
     @Override
@@ -35,11 +36,9 @@ public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragme
         call.enqueue(new Callback<ItemsItem>() {
             @Override
             public void onResponse(Call<ItemsItem> call, Response<ItemsItem> response) {
-                // String detail = response.body().toString();
-                int code = response.code();
-                if(code == 200) {
-                    ItemsItem character = response.body();
-                    detailCharacterFragment.loadData(character);
+                if (response.isSuccessful()) {
+                    ItemsItem clan = response.body();
+                    detailCharacterFragment.loadData(clan);
                 }
             }
 

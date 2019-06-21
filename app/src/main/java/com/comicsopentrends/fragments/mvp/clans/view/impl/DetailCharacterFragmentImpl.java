@@ -57,10 +57,6 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         characteresFragmentDetailPresenter = new CharacteresFragmentDetailPresenterImpl(this);
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            clanTag = bundle.getString(CLAN_TAG);
-        }
     }
 
     @Nullable
@@ -75,6 +71,10 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            clanTag = bundle.getString(CLAN_TAG);
+        }
         characteresFragmentDetailPresenter.goToDetail(clanTag);
     }
 

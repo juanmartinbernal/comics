@@ -54,7 +54,7 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
         call.enqueue(new Callback<ResponseClans>() {
             @Override
             public void onResponse(Call<ResponseClans> call, Response<ResponseClans> response) {
-                if (response.code() == 200) {
+                if (response.isSuccessful()) {
                     characters.clear();
                     List<ItemsItem> itemsItems = response.body().getItems();
                     characters.addAll(itemsItems);
