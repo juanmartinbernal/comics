@@ -55,7 +55,6 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
     TextView txtWarLose;
 
 
-
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
@@ -97,10 +96,10 @@ public class DetailCharacterFragmentImpl extends Fragment implements DetailChara
         txtNameCharacter.setText(clan.getName());
         txtDescription.setText(clan.getType());
         txtTag.setText(clan.getTag());
-        txtMembers.setText(getString(R.string.prompt_members,clan.getMembers()));
-        txtPoints.setText(getString(R.string.prompt_points,clan.getClanPoints()));
-        txtWarWin.setText(getString(R.string.prompt_war_wins,clan.getWarWins()));
-        txtWarLose.setText(getString(R.string.prompt_war_lose,clan.getWarLosses()));
+        txtMembers.setText(getString(R.string.prompt_members, clan.getMembers()));
+        txtPoints.setText(getString(R.string.prompt_points, clan.getClanPoints()));
+        txtWarWin.setText(getString(R.string.prompt_war_wins, clan.getWarWins()));
+        txtWarLose.setText(getString(R.string.prompt_war_lose, clan.getWarLosses()));
         progressBar.setVisibility(View.VISIBLE);
         Picasso.get().load(clan.getBadgeUrls().getMedium()).transform(new CircleTransform()).into(imgCharacterDetail, new Callback() {
             @Override

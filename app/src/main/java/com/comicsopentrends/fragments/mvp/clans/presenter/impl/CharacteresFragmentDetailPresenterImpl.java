@@ -1,27 +1,24 @@
 package com.comicsopentrends.fragments.mvp.clans.presenter.impl;
 
 import com.comicsopentrends.fragments.mvp.clans.presenter.CharacteresFragmentDetailPresenter;
+import com.comicsopentrends.fragments.mvp.clans.presenter.OnFinishedDetailListener;
+import com.comicsopentrends.fragments.mvp.clans.repository.ClanDetailRepository;
+import com.comicsopentrends.fragments.mvp.clans.repository.impl.ClanDetailRepositoryImpl;
 import com.comicsopentrends.fragments.mvp.clans.view.impl.DetailCharacterFragmentImpl;
 import com.comicsopentrends.model.ItemsItem;
-import com.comicsopentrends.rest.ApiClient;
-import com.comicsopentrends.rest.ApiInterface;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Asus on 20/10/2017.
  */
 
-public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragmentDetailPresenter {
+public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragmentDetailPresenter, OnFinishedDetailListener {
 
     private DetailCharacterFragmentImpl detailCharacterFragment;
-    private ApiInterface apiService;
+    private ClanDetailRepository clanDetailRepository;
 
     public CharacteresFragmentDetailPresenterImpl(DetailCharacterFragmentImpl detailCharacterFragment) {
         this.detailCharacterFragment = detailCharacterFragment;
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        clanDetailRepository = new ClanDetailRepositoryImpl(this);
     }
 
     /**
@@ -31,23 +28,16 @@ public class CharacteresFragmentDetailPresenterImpl implements CharacteresFragme
      */
     @Override
     public void goToDetail(String characterId) {
+        clanDetailRepository.getDetailClan(characterId);
+    }
 
-        Call<ItemsItem> call = apiService.getClanDetails(characterId);
-        call.enqueue(new Callback<ItemsItem>() {
-            @Override
-            public void onResponse(Call<ItemsItem> call, Response<ItemsItem> response) {
-                if (response.isSuccessful()) {
-                    ItemsItem clan = response.body();
-                    detailCharacterFragment.loadData(clan);
-                }
-            }
+    @Override
+    public void successDetail(ItemsItem itemsItem) {
+        detailCharacterFragment.loadData(itemsItem);
+    }
 
-            @Override
-            public void onFailure(Call<ItemsItem> call, Throwable t) {
-                // Log error here since request failed
-
-            }
-        });
-
+    @Override
+    public void onFailedDetail(Throwable throwable) {
+        //
     }
 }

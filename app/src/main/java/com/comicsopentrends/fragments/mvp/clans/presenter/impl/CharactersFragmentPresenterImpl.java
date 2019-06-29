@@ -18,9 +18,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by Juan Martín Bernal on 20/10/2017.
@@ -50,27 +47,38 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     public void searchCharacter(String query) {
         charactersFragment.hideScreenError();
         charactersFragment.show();
-        Call<ResponseClans> call = apiService.searchClan(query);
-        call.enqueue(new Callback<ResponseClans>() {
-            @Override
-            public void onResponse(Call<ResponseClans> call, Response<ResponseClans> response) {
-                if (response.isSuccessful()) {
-                    characters.clear();
-                    List<ItemsItem> itemsItems = response.body().getItems();
-                    characters.addAll(itemsItems);
-                    charactersFragment.setDataClans(characters);
-                }
-                charactersFragment.hide();
+        apiService.searchClan(query).
+                subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinct()
+                .subscribe(new Observer<ResponseClans>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onFailure(Call<ResponseClans> call, Throwable t) {
-                // Log error here since request failed
-                charactersFragment.hide();
-                charactersFragment.showScreenError(t.getMessage());
-            }
-        });
+                    @Override
+                    public void onNext(ResponseClans response) {
+                        characters.clear();
+                        List<ItemsItem> itemsItems = response.getItems();
+                        characters.addAll(itemsItems);
+                        charactersFragment.setDataClans(characters);
+
+                        charactersFragment.hide();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        charactersFragment.hide();
+                        charactersFragment.showScreenError(e.getMessage());
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     /**
