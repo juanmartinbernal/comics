@@ -1,41 +1,33 @@
 package com.comicsopentrends.fragments.mvp.clans.presenter.impl;
 
-import android.text.TextUtils;
-
 import com.comicsopentrends.fragments.mvp.clans.presenter.CharactersFragmentPresenter;
+import com.comicsopentrends.fragments.mvp.clans.presenter.OnFinishClansListener;
+import com.comicsopentrends.fragments.mvp.clans.repository.ClanRepository;
+import com.comicsopentrends.fragments.mvp.clans.repository.impl.ClanRepositoryImpl;
 import com.comicsopentrends.fragments.mvp.clans.view.CharactersFragment;
 import com.comicsopentrends.model.ItemsItem;
 import com.comicsopentrends.model.ResponseClans;
-import com.comicsopentrends.rest.ApiClient;
-import com.comicsopentrends.rest.ApiInterface;
 import com.comicsopentrends.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
 /**
  * Created by Juan Martín Bernal on 20/10/2017.
  */
 
-public class CharactersFragmentPresenterImpl implements CharactersFragmentPresenter {
+public class CharactersFragmentPresenterImpl implements CharactersFragmentPresenter, OnFinishClansListener {
 
     private List<ItemsItem> characters = new ArrayList<>();
-    private ApiInterface apiService;
     //paginación
     private String beforePaging;
     private String afterPaging = "";
-
+    private ClanRepository clanRepository;
     private CharactersFragment charactersFragment;
 
     public CharactersFragmentPresenterImpl(CharactersFragment charactersFragment) {
         this.charactersFragment = charactersFragment;
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        this.clanRepository = new ClanRepositoryImpl(this);
     }
 
     /**
@@ -47,38 +39,8 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
     public void searchCharacter(String query) {
         charactersFragment.hideScreenError();
         charactersFragment.show();
-        apiService.searchClan(query).
-                subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinct()
-                .subscribe(new Observer<ResponseClans>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        clanRepository.getSearchClan(query);
 
-                    }
-
-                    @Override
-                    public void onNext(ResponseClans response) {
-                        characters.clear();
-                        List<ItemsItem> itemsItems = response.getItems();
-                        characters.addAll(itemsItems);
-                        charactersFragment.setDataClans(characters);
-
-                        charactersFragment.hide();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        charactersFragment.hide();
-                        charactersFragment.showScreenError(e.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
     /**
@@ -86,45 +48,8 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
      */
     @Override
     public void loadList() {
-        Observable<ResponseClans> responseClansObservable = null;
         charactersFragment.show();
-        if (TextUtils.isEmpty(afterPaging)) {
-            responseClansObservable = apiService.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY);
-        } else {
-            responseClansObservable = apiService.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY, afterPaging);
-        }
-
-        responseClansObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinct()
-                .subscribe(new Observer<ResponseClans>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(ResponseClans response) {
-                        beforePaging = response.getPaging().getCursors().getBefore();
-                        afterPaging = response.getPaging().getCursors().getAfter();
-                        characters.addAll(response.getItems());
-                        charactersFragment.setDataClans(characters);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        charactersFragment.hide();
-                        charactersFragment.showScreenError(e.getMessage());
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // Updates UI with data
-                        charactersFragment.updateToolbar(String.valueOf(characters.size()));
-                        charactersFragment.hide();
-                    }
-                });
+        clanRepository.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY, afterPaging);
 
     }
 
@@ -151,4 +76,41 @@ public class CharactersFragmentPresenterImpl implements CharactersFragmentPresen
         loadList();
     }
 
+    @Override
+    public void onFailureSearchClan(Throwable throwable) {
+        charactersFragment.hide();
+        charactersFragment.showScreenError(throwable.getMessage());
+    }
+
+    @Override
+    public void onSuccessSearchClan(ResponseClans response) {
+        characters.clear();
+        List<ItemsItem> itemsItems = response.getItems();
+        characters.addAll(itemsItems);
+        charactersFragment.setDataClans(characters);
+
+        charactersFragment.hide();
+    }
+
+    @Override
+    public void successClans(ResponseClans response) {
+        beforePaging = response.getPaging().getCursors().getBefore();
+        afterPaging = response.getPaging().getCursors().getAfter();
+        characters.addAll(response.getItems());
+        charactersFragment.setDataClans(characters);
+    }
+
+    @Override
+    public void onCompleteClans() {
+        // Updates UI with data
+        charactersFragment.updateToolbar(String.valueOf(characters.size()));
+        charactersFragment.hide();
+    }
+
+    @Override
+    public void onFailureClans(Throwable throwable) {
+        charactersFragment.hide();
+        charactersFragment.showScreenError(throwable.getMessage());
+
+    }
 }
