@@ -24,6 +24,7 @@
         <activity
             android:name="com.comicsopentrends.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +34,7 @@
         </activity>
         <activity
             android:name="com.comicsopentrends.MainActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
            >
@@ -47,6 +49,7 @@
 
         <activity
             android:name="com.comicsopentrends.CharacterDetailActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             >

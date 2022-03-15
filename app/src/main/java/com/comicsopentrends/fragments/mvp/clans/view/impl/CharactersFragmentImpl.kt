@@ -3,15 +3,15 @@ package com.comicsopentrends.fragments.mvp.clans.view.impl
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.MenuItemCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.core.view.MenuItemCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import android.view.*
 import android.view.animation.AnimationUtils
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.comicsopentrends.CharacterDetailActivity
 import com.comicsopentrends.R
 import com.comicsopentrends.fragments.mvp.clans.adapter.ClanAdapter
@@ -79,10 +79,11 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
         hideScreenError()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.main, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main, menu)
 
-        val searchItem = menu!!.findItem(R.id.action_search)
+        val searchItem = menu.findItem(R.id.action_search)
         val searchView = MenuItemCompat.getActionView(searchItem) as SearchView
         // See above
         MenuItemCompat.setOnActionExpandListener(searchItem, SearchViewExpandListener(context))
@@ -108,6 +109,7 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
             }
         })
     }
+
 
     override fun setDataClans(dataClans: List<ItemsItem>) {
         if (adapter != null) {
@@ -154,7 +156,7 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
      */
     override fun seeImageCharacter(url: String?, name: String?) {
         // custom dialog
-        Utils.showDialogPreviewImage(activity, url, name)
+        Utils.showDialogPreviewImage(requireActivity().applicationContext, url, name)
     }
 
     override fun onRefresh() {

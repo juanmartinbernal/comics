@@ -1,8 +1,8 @@
 package com.comicsopentrends
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 import com.comicsopentrends.fragments.mvp.clans.view.impl.CharactersFragmentImpl
 import com.comicsopentrends.util.Utils

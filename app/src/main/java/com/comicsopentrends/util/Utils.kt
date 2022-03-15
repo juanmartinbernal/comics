@@ -1,9 +1,10 @@
 package com.comicsopentrends.util
 
 import android.app.Dialog
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
+import android.content.Context
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
@@ -34,12 +35,12 @@ object Utils {
 
     /**
      * Método encargado de mostrar un dialogo con el previo de una imagen
-     * @param activity
+     * @param context
      * @param url
      * @param name
      */
-    fun showDialogPreviewImage(activity: FragmentActivity?, url: String?, name: String?) {
-        val dialog = Dialog(activity)
+    fun showDialogPreviewImage(context: Context, url: String?, name: String?) {
+        val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_photo_profile)
 
