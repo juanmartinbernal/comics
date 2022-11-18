@@ -14,6 +14,10 @@ import kotlinx.android.synthetic.main.splash.*
 
 class SplashActivity : Activity() {
 
+    companion object {
+        private const val DURATION_SPLASH = 3000L
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splash)
@@ -23,13 +27,12 @@ class SplashActivity : Activity() {
 
     private fun initApp() {
         imgVerse!!.startAnimation(AnimationUtils.loadAnimation(this, R.anim.animation))
-        val DURACION_SPLASH = 4000
+
         Handler().postDelayed({
             val intent = Intent(this@SplashActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
-            //overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
-        }, DURACION_SPLASH.toLong())
+        }, DURATION_SPLASH)
     }
 
     override fun onPause() {

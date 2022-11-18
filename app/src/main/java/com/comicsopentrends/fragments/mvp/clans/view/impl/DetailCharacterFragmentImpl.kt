@@ -2,15 +2,14 @@ package com.comicsopentrends.fragments.mvp.clans.view.impl
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.comicsopentrends.R
 import com.comicsopentrends.fragments.mvp.clans.presenter.CharacteresFragmentDetailPresenter
 import com.comicsopentrends.fragments.mvp.clans.presenter.impl.CharacteresFragmentDetailPresenterImpl
 import com.comicsopentrends.fragments.mvp.clans.view.CharactersFragment.Companion.CLAN_TAG
-import com.comicsopentrends.fragments.mvp.clans.view.DetailCharacterFragment
 import com.comicsopentrends.model.ItemsItem
 import com.comicsopentrends.util.CircleTransform
 import com.squareup.picasso.Callback
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.layout_detail_fragment.*
  * The pager adapter, which provides the pages to the view pager widget.
  */
 
-class DetailCharacterFragmentImpl : Fragment(), DetailCharacterFragment {
+class DetailCharacterFragmentImpl : Fragment() {
 
     var clanTag: String? = ""
     private var characteresFragmentDetailPresenter: CharacteresFragmentDetailPresenter? = null
@@ -36,9 +35,12 @@ class DetailCharacterFragmentImpl : Fragment(), DetailCharacterFragment {
         characteresFragmentDetailPresenter = CharacteresFragmentDetailPresenterImpl(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_detail_fragment, container, false)
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.layout_detail_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,6 +58,7 @@ class DetailCharacterFragmentImpl : Fragment(), DetailCharacterFragment {
      * @param clan
      */
     fun loadData(clan: ItemsItem) {
+        txtInfo.visibility = View.VISIBLE
         txtNameCharacter!!.text = clan.name
         txtDescription!!.text = clan.type
         txtTag!!.text = clan.tag

@@ -12,8 +12,10 @@ interface CharactersFragment {
     fun hideScreenError()
 
     fun setRefreshing(refresh: Boolean)
+    fun hideClansList()
+    fun showClansList()
 
     companion object {
-        val CLAN_TAG = "clanTag"
+        const val CLAN_TAG = "clanTag"
     }
 }

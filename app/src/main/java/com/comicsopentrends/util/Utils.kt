@@ -2,14 +2,13 @@ package com.comicsopentrends.util
 
 import android.app.Dialog
 import android.content.Context
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.comicsopentrends.R
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso

@@ -85,6 +85,7 @@ class CharactersFragmentPresenterImpl(private val charactersFragment: Characters
         beforePaging = response.paging!!.cursors!!.before
         afterPaging = response.paging!!.cursors!!.after
         characters.addAll(response.items!!)
+        charactersFragment.showClansList()
         charactersFragment.setDataClans(characters)
     }
 
@@ -96,6 +97,7 @@ class CharactersFragmentPresenterImpl(private val charactersFragment: Characters
 
     override fun onFailureClans(throwable: Throwable) {
         charactersFragment.hide()
+        charactersFragment.hideClansList()
         charactersFragment.showScreenError(throwable.message)
 
     }

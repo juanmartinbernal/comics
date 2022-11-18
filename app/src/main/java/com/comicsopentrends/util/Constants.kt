@@ -6,8 +6,8 @@ package com.comicsopentrends.util
 
 object Constants {
     //search
-    val NUM_MIN_EXECUTE_SEARCH = 3
-    val LIMIT = 20
-    val WAR_FREQUENCY = "always"
+    const val NUM_MIN_EXECUTE_SEARCH = 3
+    const val LIMIT = 20
+    const val WAR_FREQUENCY = "always"
 
 }

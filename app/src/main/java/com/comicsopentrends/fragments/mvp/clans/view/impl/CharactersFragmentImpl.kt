@@ -76,7 +76,7 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
         swipeRefreshLayout!!.isRefreshing = false
         imgVerseLoading!!.visibility = View.GONE
         imgVerseLoading!!.clearAnimation()
-        hideScreenError()
+      //  hideScreenError()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -141,6 +141,14 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
         swipeRefreshLayout!!.isRefreshing = refresh
     }
 
+    override fun hideClansList() {
+        recycler_view.visibility = View.GONE
+    }
+
+    override fun showClansList() {
+        recycler_view.visibility = View.VISIBLE
+    }
+
     override fun onItemClick(item: ItemsItem) {
         //ir al detalle
         val intent = Intent(context, CharacterDetailActivity::class.java)
@@ -156,7 +164,7 @@ class CharactersFragmentImpl : Fragment(), CharactersFragment, SwipeRefreshLayou
      */
     override fun seeImageCharacter(url: String?, name: String?) {
         // custom dialog
-        Utils.showDialogPreviewImage(requireActivity().applicationContext, url, name)
+        context?.let { Utils.showDialogPreviewImage(it, url, name) }
     }
 
     override fun onRefresh() {

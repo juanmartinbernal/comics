@@ -16,11 +16,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class ClanRepositoryImpl(private val onFinishClansListener: OnFinishClansListener) : ClanRepository {
-    private val apiService: ApiInterface
-
-    init {
-        apiService = ApiClient.client.create(ApiInterface::class.java!!)
-    }
+    private val apiService: ApiInterface = ApiClient.client.create(ApiInterface::class.java)
 
     override fun getSearchClan(query: String?) {
         apiService.searchClan(query).subscribeOn(Schedulers.io())
@@ -54,7 +50,7 @@ class ClanRepositoryImpl(private val onFinishClansListener: OnFinishClansListene
             responseClansObservable = apiService.getClans(Constants.LIMIT, Constants.WAR_FREQUENCY, afterPaging)
         }
 
-        responseClansObservable!!.subscribeOn(Schedulers.io())
+        responseClansObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinct()
                 .subscribe(object : Observer<ResponseClans> {

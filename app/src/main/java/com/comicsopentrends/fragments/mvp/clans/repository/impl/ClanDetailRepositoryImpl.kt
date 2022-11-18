@@ -13,11 +13,7 @@ import io.reactivex.schedulers.Schedulers
 
 class ClanDetailRepositoryImpl(private val onFinishedDetailListener: OnFinishedDetailListener) : ClanDetailRepository {
 
-    private val apiService: ApiInterface
-
-    init {
-        apiService = ApiClient.client.create(ApiInterface::class.java!!)
-    }
+    private val apiService: ApiInterface = ApiClient.client.create(ApiInterface::class.java)
 
     override fun getDetailClan(clanTag: String?) {
         apiService.getClanDetails(clanTag).subscribeOn(Schedulers.io())
