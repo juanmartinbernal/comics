@@ -1,0 +1,11 @@
+<resources>
+    <string name="clan_list_title">Clanes (%1$d)</string>
+    <string name="clan_search_hint">Buscar...</string>
+    <string name="clan_search_clear">Borrar búsqueda</string>
+    <string name="clan_members_count">Miembros: %1$d</string>
+    <string name="clan_points">Puntos del clan: %1$d</string>
+    <string name="clan_war_wins">Guerras ganadas: %1$d</string>
+    <string name="clan_war_losses">Guerras perdidas: %1$d</string>
+    <string name="clan_detail_title">Detalle del clan</string>
+    <string name="clan_detail_back">Volver</string>
+</resources>

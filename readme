@@ -4,4 +4,12 @@ Para el tema de la key de la api es sencillo:
 2- Una vez creada la cuenta, en el enlace anterior hay un link "My Account"
 3- Creas una nueva key, te pide nombre, descripción y la IP (https://www.cual-es-mi-ip.net/) a la que darán permisos para hacer las peticiones.
 
-A nivel de app con el TOKEN que te genero, vas a la clase ApiClient y lo reemplazas en la constante "TOKEN_CLANS".
+A nivel de app, el token NO se versiona en el código: se añade en el fichero
+"local.properties" (que está en .gitignore) con la propiedad:
+
+    clanApiToken=<tu_token_aqui>
+
+Gradle lo expone como BuildConfig.CLAN_API_TOKEN (ver app/build.gradle.kts) y desde
+ahí se inyecta al módulo `:core:network` (ClanApiConfig) al arrancar Koin en
+ComicsApplication.
+
