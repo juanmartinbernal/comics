@@ -8,6 +8,7 @@ import com.comicsopentrends.domain.usecase.SearchClansUseCase
 import com.comicsopentrends.feature.clans.list.ClanListContract.Effect
 import com.comicsopentrends.feature.clans.list.ClanListContract.Intent
 import com.comicsopentrends.feature.clans.list.ClanListContract.State
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -42,6 +43,7 @@ class ClanListViewModel(
 
     private fun observeSearchQuery() {
         viewModelScope.launch {
+            @OptIn(FlowPreview::class)
             queryFlow
                 .debounce(SEARCH_DEBOUNCE_MILLIS)
                 .distinctUntilChanged()
